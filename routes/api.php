@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,8 +23,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'user'],function(){
     Route::get('products',[ProductController::class,'index']);
+    Route::resource('cartitems',CartItemController::class);
+    Route::get('profile',[UserController::class,'index']);
 });
 
 Route::group(['prefix' => 'admin'],function(){
     Route::resource('products',ProductController::class);
+    Route::resource('users', UserController::class);
 });
