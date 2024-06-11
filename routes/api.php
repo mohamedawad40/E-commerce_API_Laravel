@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -27,7 +29,11 @@ Route::group(['prefix' => 'user'],function(){
     Route::get('profile',[UserController::class,'index']);
 });
 
-Route::group(['prefix' => 'admin'],function(){
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'],function(){
     Route::resource('products',ProductController::class);
     Route::resource('users', UserController::class);
+    Route::resource('categories', CategoryController::class);
 });
+
+Route::post('register',[AuthController::class,'register']);
+Route::post('login',[AuthController::class,'login']);

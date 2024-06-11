@@ -15,7 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products=Product::all();
+        // $products=Product::all();
+        $products = Product::with('categories')->get();
         return response()->json(['message' => 'Product is found', 'product' => $products], 201);
 
     }
@@ -54,7 +55,7 @@ class ProductController extends Controller
             'image'  => $imagepath,
         ]);
 
-        // $product->categories()->sync($validated['categories']);
+        $product->categories()->attach($validated['categories']);
 
         // // Add attributes if present
         // if (!empty($validated['attributes'])) {
@@ -65,6 +66,14 @@ class ProductController extends Controller
         //         ]);
         //     }
         // }
+        if(!empty($validated('attributes'))){
+            foreach ($validated('attributes') as $attribute) {
+                $product->attributes()->create([
+                    'key'       =>  $attribute->key,
+                    'value'       =>  $attribute->value,
+                ]);
+            }
+        }
         return response()->json(['message' => 'Product is successfully created', 'product' => $product], 201);
 
     }
@@ -117,10 +126,9 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        // Update categories if present
-        // if (isset($validated['categories'])) {
-        //     $product->categories()->sync($validated['categories']);
-        // }
+        if (isset($validated['categories'])) {
+            $product->categories()->sync($validated['categories']);
+            }
 
         // Update attributes if present
         // if (!empty($validated['attributes'])) {
@@ -134,6 +142,7 @@ class ProductController extends Controller
         //         ]);
         //     }
         // }
+
 
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
     }
