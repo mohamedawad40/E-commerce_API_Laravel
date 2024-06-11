@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
@@ -33,6 +34,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'],function(){
     Route::resource('products',ProductController::class);
     Route::resource('users', UserController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('attributes', AttributeController::class);
+
 });
 
 Route::post('register',[AuthController::class,'register']);

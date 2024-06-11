@@ -57,7 +57,6 @@ class ProductController extends Controller
 
         $product->categories()->attach($validated['categories']);
 
-        // // Add attributes if present
         // if (!empty($validated['attributes'])) {
         //     foreach ($validated['attributes'] as $attribute) {
         //         $product->attributes()->create([
@@ -66,11 +65,11 @@ class ProductController extends Controller
         //         ]);
         //     }
         // }
-        if(!empty($validated('attributes'))){
-            foreach ($validated('attributes') as $attribute) {
+        if(!empty($validated['attributes'])){
+            foreach ($validated['attributes'] as $attribute) {
                 $product->attributes()->create([
-                    'key'       =>  $attribute->key,
-                    'value'       =>  $attribute->value,
+                    'key' => $attribute['key'],
+                    'value' => $attribute['value'],
                 ]);
             }
         }
@@ -130,18 +129,16 @@ class ProductController extends Controller
             $product->categories()->sync($validated['categories']);
             }
 
-        // Update attributes if present
-        // if (!empty($validated['attributes'])) {
-        //     // Delete existing attributes
-        //     $product->attributes()->delete();
-        //     // Add new attributes
-        //     foreach ($validated['attributes'] as $attribute) {
-        //         $product->attributes()->create([
-        //             'key' => $attribute['key'],
-        //             'value' => $attribute['value'],
-        //         ]);
-        //     }
-        // }
+        if (!empty($validated['attributes'])) {
+            $product->attributes()->delete();
+
+            foreach ($validated['attributes'] as $attribute) {
+                $product->attributes()->create([
+                    'key' => $attribute['key'],
+                    'value' => $attribute['value'],
+                ]);
+            }
+        }
 
 
         return response()->json(['message' => 'Product updated successfully', 'product' => $product], 200);
