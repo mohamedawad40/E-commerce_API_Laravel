@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Requests\ProductRequest;
-use GuzzleHttp\Handler\Proxy;
 use Illuminate\Support\Facades\Storage;
+use Spatie\QueryBuilder\QueryBuilder;
+
 
 class ProductController extends Controller
 {
@@ -15,8 +16,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // $products=Product::all();
-        $products = Product::with('categories')->get();
+        $products = QueryBuilder::for(Product::class)  //used for filter and sort
+        ->allowedFilters(['name', 'description'])
+        ->allowedSorts(['created_at', 'price'])
+        ->get();
+
         return response()->json(['message' => 'Product is found', 'product' => $products], 201);
 
     }
@@ -57,14 +61,6 @@ class ProductController extends Controller
 
         $product->categories()->attach($validated['categories']);
 
-        // if (!empty($validated['attributes'])) {
-        //     foreach ($validated['attributes'] as $attribute) {
-        //         $product->attributes()->create([
-        //             'key' => $attribute['key'],
-        //             'value' => $attribute['value'],
-        //         ]);
-        //     }
-        // }
         if(!empty($validated['attributes'])){
             foreach ($validated['attributes'] as $attribute) {
                 $product->attributes()->create([

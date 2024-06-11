@@ -62,7 +62,7 @@ class AttributeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product, Attribute $attribute)
+    public function update(Request $request, Attribute $attribute)
     {
         $request->validate([
             'key' => 'sometimes|required|string|max:255',
